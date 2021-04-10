@@ -12,6 +12,9 @@ from ray.util.placement_group import (
 )
 
 bundle1 = {"GPU": 0.25, "CPU": 1}
+tot_cpus = 15
+tot_gpus = 3
+ray.init(num_gpus=tot_gpus, num_cpus=tot_cpus, address="auto", _redis_password='123')
 
 @ray.remote(num_cpus=bundle1['CPU'], num_gpus=bundle1['GPU'])
 class AsyncActor():
@@ -28,11 +31,6 @@ class AsyncActor():
             "value": value,
             "actor_id": self.id,
         }
-
-
-tot_cpus = 15
-tot_gpus = 3
-ray.init(address="auto", _redis_password='123', num_gpus=tot_gpus, num_cpus=tot_cpus)
 
 pg_cnt = min(int(tot_gpus/bundle1['GPU']), int(tot_cpus/bundle1['CPU']))
 
